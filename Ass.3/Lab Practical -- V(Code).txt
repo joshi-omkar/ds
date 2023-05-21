@@ -1,42 +1,40 @@
-EXPERIMENT No. 03
-
-Code :
-
-#include <stdio.h>
+#include <iostream>
 #include <mpi.h>
 
 int main(int argc, char** argv) {
-    int rank, size;
-    int arr[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-    int sum = 0;
+    int size, rank;
+    int array[] = {1, 2, 3, 4, 5};  // Sample array
+    int localSum = 0;
+    int totalSum = 0;
+
     MPI_Init(&argc, &argv);
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
-    int n = sizeof(arr) / sizeof(arr[0]);
-    int local_sum = 0;
-    for (int i = rank; i < n; i += size) {
-        local_sum += arr[i];
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    // Calculate the number of elements each process will receive
+    int elementsPerProcess = sizeof(array) / sizeof(array[0]) / size;
+    int remainingElements = sizeof(array) / sizeof(array[0]) % size;
+    int localElements = (rank < remainingElements) ? elementsPerProcess + 1 : elementsPerProcess;
+
+    // Calculate the starting index for the local portion
+    int startIndex = rank * elementsPerProcess + ((rank < remainingElements) ? rank : remainingElements);
+
+    // Calculate the partial sum for the local portion
+    for (int i = startIndex; i < startIndex + localElements; i++) {
+        localSum += array[i];
     }
-    MPI_Reduce(&local_sum, &sum, 1, MPI_INT, MPI_SUM, 0,
-        MPI_COMM_WORLD);
+
+    // Perform the reduction operation to get the total sum
+    MPI_Reduce(&localSum, &totalSum, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+
+    // Master process prints the result
     if (rank == 0) {
-        printf("Sum of array elements is %d\n", sum);
+        std::cout << "Total sum: " << totalSum << std::endl;
     }
+
     MPI_Finalize();
+    return 0;
+}
 
-
-Process of Execution :(I used Visual Studio Code, you can use by your prefrence.)
-
-1.Install the Microsoft MPI package on your system.
-2.Install the C/C++ extension for Visual Studio Code.
-3.Create a new C file and write your MPI program in it.
-4.Open a terminal window in Visual Studio Code.
-5.Then Compile the Program.
-
------------------------------------------------------------------------------------------------------------------------------
-
-EXPERIMENT No.07
-
-Code :
-
-
+//mpicxx mpi_sum.cpp -o mpi_sum
+//mpiexec -n <num_processes> ./mpi_sum

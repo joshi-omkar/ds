@@ -1,14 +1,3 @@
-
-//============================================================================
-//
-//  Name        : ReverseClient.java
-//  Author      : Sachin Vijaykumar Kunte
-//  Copyright   : Copyright ©2019 by Sachin Kunte All rights reserved.
-//  Description : A Java program for a Client implementation 
-//  contact     : kuntesv@gmail.com
-//
-//============================================================================
-
 import ReverseModule.*;
 import org.omg.CosNaming.*;
 import org.omg.CosNaming.NamingContextPackage.*;
