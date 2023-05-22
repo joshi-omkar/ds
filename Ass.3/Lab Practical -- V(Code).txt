@@ -1,3 +1,5 @@
+//Create mpi_sum.cpp file
+
 #include <iostream>
 #include <mpi.h>
 
@@ -37,4 +39,4 @@ int main(int argc, char** argv) {
 }
 
 //mpicxx mpi_sum.cpp -o mpi_sum
-//mpiexec -n <num_processes> ./mpi_sum
+//mpiexec -n 4 ./mpi_sum
